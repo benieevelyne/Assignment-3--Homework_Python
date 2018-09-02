@@ -37,7 +37,7 @@ with open(csvpath, newline='') as csvfile:
     PriorMonth = 0
     StoreTotalChanges = 0
     AverageChangeinProfitandLosses = 0
-    GreatestIncrease = 0
+    GreatestIncrease = ["", 0]
     for row in csvreader:
         if counter != 0:
             #The total net amount of "Profit/Losses" over the entire period
@@ -48,8 +48,8 @@ with open(csvpath, newline='') as csvfile:
             #print (str(StoreTotalChanges))
             PriorMonth = current
             #Loop through StoreTotalChange and compare number to find the greatest increase and greatest decrease
-            if (StoreTotalChanges > GreatestIncrease):
-                    GreatestIncrease = StoreTotalChanges
+            if (StoreTotalChanges > GreatestIncrease[1]):
+                    GreatestIncrease[1] = StoreTotalChanges
 
 
 
@@ -66,4 +66,4 @@ with open(csvpath, newline='') as csvfile:
     print ("Average Change: " + "$" + str(AverageChangeinProfitandLosses))
 
     #Print the greatest increase in profits (date and amount) over the entire period
-    print(GreatestIncrease)
+    print(GreatestIncrease[1])
