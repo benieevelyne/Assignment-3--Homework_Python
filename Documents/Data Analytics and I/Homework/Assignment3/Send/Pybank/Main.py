@@ -6,6 +6,7 @@ import os
 import csv
 
 csvpath = os.path.join('.', 'budget_data.csv')
+newfile = os.path.join('.', 'pyBankResults.txt')
 
 # # Method 1: Plain Reading of CSV files
 # with open(csvpath, 'r') as file_handler:
@@ -13,7 +14,7 @@ csvpath = os.path.join('.', 'budget_data.csv')
 #     print(lines)
 #     print(type(lines))
 
-
+FilePrint=[]
 # Method 2: Improved Reading using CSV module
 
 with open(csvpath, newline='') as csvfile:
@@ -37,7 +38,10 @@ with open(csvpath, newline='') as csvfile:
     PriorMonth = 0
     StoreTotalChanges = 0
     AverageChangeinProfitandLosses = 0
-    GreatestIncrease = ["", 0]
+    GreatestIncrease =0 
+    GreatestDate = 0
+    LowestIncrease = 9999999999
+    LowestDate = 0
     for row in csvreader:
         if counter != 0:
             #The total net amount of "Profit/Losses" over the entire period
@@ -45,25 +49,33 @@ with open(csvpath, newline='') as csvfile:
             current = (row[1])
             if counter > 1:
                 StoreTotalChanges = StoreTotalChanges + int(current) - int(PriorMonth)
+            currentchange = int(current) - int(PriorMonth)
             #print (str(StoreTotalChanges))
             PriorMonth = current
             #Loop through StoreTotalChange and compare number to find the greatest increase and greatest decrease
-            if (StoreTotalChanges > GreatestIncrease[1]):
-                    GreatestIncrease[1] = StoreTotalChanges
-
+            if (currentchange > GreatestIncrease):
+                    GreatestIncrease = currentchange
+                    GreatestDate = row[0]
+            if (currentchange < LowestIncrease):
+                    LowestIncrease = currentchange
+                    LowestDate = row[0]
 
 
         # Print the values
 
         counter = counter + 1  
-    print("Financial Analysis" )  
-    print("-----------------------------------------")
-    print ("Total Months: " + str(counter - 1))
-    print ("Total: " + "$" + str(NetProfitorLoss))
+    FilePrint.append("Financial Analysis" + "\n" )  
+    FilePrint.append("-----------------------------------------"+ "\n")
+    FilePrint.append("Total Months: " + str(counter - 1)+ "\n")
+    FilePrint.append("Total: " + "$" + str(NetProfitorLoss)+ "\n")
     AverageChangeinProfitandLosses = round((StoreTotalChanges)/(counter - 2), 2)
     
     # The average change in "Profit/Losses" between months over the entire period 
-    print ("Average Change: " + "$" + str(AverageChangeinProfitandLosses))
+    FilePrint.append("Average Change: " + "$" + str(AverageChangeinProfitandLosses)+ "\n")
 
     #Print the greatest increase in profits (date and amount) over the entire period
-    print(GreatestIncrease[1])
+    FilePrint.append("Greatest Increase in Profits: "+GreatestDate+" ("+str(GreatestIncrease)+")"+ "\n")
+    FilePrint.append("Greatest Decrease in Profits: "+LowestDate+" ("+str(LowestIncrease)+")"+ "\n")
+
+with open(newfile, "w") as txtfile:
+    txtfile.writelines(FilePrint)
